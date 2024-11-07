@@ -8,26 +8,21 @@ from shell_emulator import ShellEmulator
 class TestShellEmulator(unittest.TestCase):
 
     def setUp(self):
-        # Create a temporary virtual file system for testing
         self.vfs_path = "test_vfs.tar"
         self.log_path = "test_log.json"
 
-        # Create a sample directory structure
         os.makedirs("test_vfs/dir1", exist_ok=True)
         with open("test_vfs/file1.txt", "w") as f:
             f.write("This is a test file.")
         with open("test_vfs/dir1/file2.txt", "w") as f:
             f.write("This is another test file.")
 
-        # Create a tar archive of the sample directory structure
         with tarfile.open(self.vfs_path, "w") as tar:
             tar.add("test_vfs", arcname=".")
 
-        # Initialize the ShellEmulator
         self.emulator = ShellEmulator(self.vfs_path, self.log_path)
 
     def tearDown(self):
-        # Clean up the temporary files and directories
         if os.path.exists(self.vfs_path):
             os.remove(self.vfs_path)
         if os.path.exists(self.log_path):
