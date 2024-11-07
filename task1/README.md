@@ -42,7 +42,7 @@ python shell_emulator.py dir.tar log.json
 
 2. Проверим команды
 
-https://github.com/TreoDope/ccTask1/blob/main/task1/screenshot/test.png
+![alt text](https://github.com/TreoDope/ccTask1/blob/main/task1/screenshot/test.png)
 
 - Исходный текст file1.txt
 
