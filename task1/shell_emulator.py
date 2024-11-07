@@ -38,7 +38,6 @@ class ShellEmulator:
     def cd(self, directory):
         if directory == "..":
             if self.current_dir != "/":
-                # Переход на уровень выше
                 self.current_dir = os.path.dirname(self.current_dir)
             output = "Changed to parent directory"
         else:
