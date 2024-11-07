@@ -42,7 +42,7 @@ python shell_emulator.py dir.tar log.json
 
 2. Проверим команды
 
-![test](https://CCЫЛКА "test")
+![test]([https://CCЫЛКА](https://github.com/TreoDope/ccTask1/blob/main/task1/screenshot/test.png) "test")
 
 - Исходный текст file1.txt
 
