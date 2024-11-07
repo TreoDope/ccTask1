@@ -55,44 +55,44 @@ Hello, Dennis Ritchie!
 ```json
 [
     {
-        "time": "2024-11-06T14:35:42.354575",
-        "action": "ls "
+        "command": "ls",
+        "timestamp": "2024-11-07T14:08:53.568229"
     },
     {
-        "time": "2024-11-06T14:35:46.407576",
-        "action": "ls nondir"
+        "command": "cd nodir",
+        "timestamp": "2024-11-07T14:09:04.864445"
     },
     {
-        "time": "2024-11-06T14:35:54.581743",
-        "action": "tac file1.txt"
+        "command": "cd dir1",
+        "timestamp": "2024-11-07T14:09:18.887323"
     },
     {
-        "time": "2024-11-06T14:35:59.823780",
-        "action": "tac nonfile"
+        "command": "ls",
+        "timestamp": "2024-11-07T14:09:20.660071"
     },
     {
-        "time": "2024-11-06T14:36:08.104917",
-        "action": "chown nonfile user1"
+        "command": "cd ..",
+        "timestamp": "2024-11-07T14:09:25.988384"
     },
     {
-        "time": "2024-11-06T14:36:16.822054",
-        "action": "chown file2.txt user1"
+        "command": "ls",
+        "timestamp": "2024-11-07T14:09:28.409956"
     },
     {
-        "time": "2024-11-06T14:36:21.956143",
-        "action": "cd nondir"
+        "command": "tac file1.txt",
+        "timestamp": "2024-11-07T14:09:35.115240"
     },
     {
-        "time": "2024-11-06T14:36:25.541191",
-        "action": "cd dir1"
+        "command": "tac nofile",
+        "timestamp": "2024-11-07T14:09:39.058916"
     },
     {
-        "time": "2024-11-06T14:36:29.288221",
-        "action": "ls dir1"
+        "command": "chown file1.txt 20",
+        "timestamp": "2024-11-07T14:09:53.097921"
     },
     {
-        "time": "2024-11-06T14:36:37.738432",
-        "action": "exit"
+        "command": "chown nofile 20",
+        "timestamp": "2024-11-07T14:10:06.678925"
     }
 ]
 ```
