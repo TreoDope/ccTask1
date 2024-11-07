@@ -1,0 +1,42 @@
+[
+    {
+        "command": "ls",
+        "timestamp": "2024-11-07T14:08:53.568229"
+    },
+    {
+        "command": "cd nodir",
+        "timestamp": "2024-11-07T14:09:04.864445"
+    },
+    {
+        "command": "cd dir1",
+        "timestamp": "2024-11-07T14:09:18.887323"
+    },
+    {
+        "command": "ls",
+        "timestamp": "2024-11-07T14:09:20.660071"
+    },
+    {
+        "command": "cd ..",
+        "timestamp": "2024-11-07T14:09:25.988384"
+    },
+    {
+        "command": "ls",
+        "timestamp": "2024-11-07T14:09:28.409956"
+    },
+    {
+        "command": "tac file1.txt",
+        "timestamp": "2024-11-07T14:09:35.115240"
+    },
+    {
+        "command": "tac nofile",
+        "timestamp": "2024-11-07T14:09:39.058916"
+    },
+    {
+        "command": "chown file1.txt 20",
+        "timestamp": "2024-11-07T14:09:53.097921"
+    },
+    {
+        "command": "chown nofile 20",
+        "timestamp": "2024-11-07T14:10:06.678925"
+    }
+]
