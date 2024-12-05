@@ -44,20 +44,18 @@ package_name = pipdeptree
 1. Запустим программу для тестов.
 
 ```sh
-python test_parser.py
+python test_visualizer.py
 ```
 
 2. Получаем результаты пройденных тестов через `unittest`.
 
 ```sh
-test_constant_declaration (__main__.TestConfigParser.test_constant_declaration) ... ok
-test_constant_evaluation (__main__.TestConfigParser.test_constant_evaluation) ... ok
-test_invalid_constant_evaluation (__main__.TestConfigParser.test_invalid_constant_evaluation) ... ok
-test_multiline_comment (__main__.TestConfigParser.test_multiline_comment) ... ok
-test_nested_struct (__main__.TestConfigParser.test_nested_struct) ... ok
-
+C:\Users\Dima\Downloads\task2\task2>py test_visualizer.py
+C:\Users\Dima\Downloads\task2\task2\test_visualizer.py:4: DeprecationWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html
+  import pkg_resources
+.....
 ----------------------------------------------------------------------
-Ran 5 tests in 0.000s
+Ran 5 tests in 0.012s
 
 OK
 ```
