@@ -16,85 +16,28 @@
 
 ### Тест в ручную
 
-1. Создадим два примера конфигураций из разных предметных областей.
+Установим mermaid и библиотеку "pipdeptree" для проверки зависимостей
 
-#### Конфигурация для базы данных `db.txt`
+#### Содержимое файла config.ini
+[settings]
+visualizer_path = C:/Users/Dima/AppData/Local/fnm_multishells/35520_1733417156550/mmdc.cmd
+package_name = pipdeptree
+
+Запуск программы
+
+![image](https://github.com/user-attachments/assets/d94faf8c-3576-406d-bba9-bef139c56160)
+
+После завершения программа открывает результат в виде png графика
+
+![graph](https://github.com/user-attachments/assets/07bfcf57-20e2-4a80-9c7a-98f1ba7364a9)
+
+Проверим корректность данных
+
+![image](https://github.com/user-attachments/assets/ea432480-50eb-4358-8d26-22f5a9722ef8)
+
+Зависимости совпадают
 
 
-```cfg
-{#
-Это конфигурация для базы данных
-#}
-
-db_name = 'mydatabase'
-db_user = 'admin'
-db_password = 'secret'
-
-struct {
-    database {
-        name = ?(db_name),
-        user = ?(db_user),
-        password = ?(db_password),
-        max_connections = 50,
-        timeout = 10
-    }
-}
-```
-
-#### Конфигурация для веб-сервера `network.txt`
-
-```cfg
-{#
-Это конфигурация для веб-сервера
-#}
-
-port = 8080
-host = 'localhost'
-
-struct {
-    server {
-        port = ?(port),
-        host = ?(host),
-        max_connections = 100,
-        timeout = 30
-    }
-}
-```
-
-2. Запустим скрипт из командной строки, передав путь к выходному `jaml` файлу через входной текст `db.txt`:
-
-```sh
-python parser.py < db.txt > output.yaml
-```
-
-Получаем выходной файл:
-
-```yaml
-struct:
-  max_connections: 50
-  name: mydatabase
-  password: secret
-  timeout: 10
-  user: admin
-
-```
-
-3. Запустим скрипт из командной строки, передав путь к выходному `yaml` файлу через входной текст `network.txt`:
-
-```sh
-python parser.py < network.txt > output.yaml
-```
-
-Получаем выходной файл:
-
-```yaml
-struct:
-  host: localhost
-  max_connections: 100
-  port: 8080
-  timeout: 30
-
-```
 
 ### Тест через `test_parser.py`
 
