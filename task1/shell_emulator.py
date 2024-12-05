@@ -1,135 +1,125 @@
-import os
-import json
 import tarfile
+import json
+import os
 import datetime
 import tkinter as tk
-from tkinter import messagebox, filedialog
+from tkinter import simpledialog, messagebox
 
-class ShellEmulator:
-    def __init__(self, vfs_path, log_path):
-        self.vfs_path = vfs_path
+class VirtualShell:
+    def __init__(self, tar_path, log_path):
+        self.tar_path = tar_path
         self.log_path = log_path
-        self.current_dir = "/"
-        self.log_data = []
-        self.file_owners = {}
+        self.tar = tarfile.open(tar_path, 'r')
+        self.current_path = ''
+        self.log = []
 
-        with tarfile.open(vfs_path, "r") as tar:
-            tar.extractall("virtual_fs")
-
-    def log_action(self, command):
-        action = {
-            "command": command,
-            "timestamp": datetime.datetime.now().isoformat()
-        }
-        self.log_data.append(action)
-        with open(self.log_path, "w") as f:
-            json.dump(self.log_data, f, indent=4)
+    def log_action(self, action):
+        timestamp = datetime.datetime.now().isoformat()
+        self.log.append({'timestamp': timestamp, 'action': action})
+        with open(self.log_path, 'w') as log_file:
+            json.dump(self.log, log_file, indent=4)
 
     def ls(self):
-        path = os.path.join("virtual_fs", self.current_dir.strip("/"))
-        if os.path.exists(path):
-            files = os.listdir(path)
-            output = " ".join(files)
-        else:
-            output = "Directory not found"
-        self.log_action("ls")
-        return output
+        members = self.tar.getmembers()
+        current_dir = self.current_path.strip('/')
+        if current_dir:
+            current_dir += '/'
+        result = [member.name.split('/')[-1] for member in members if member.name.startswith(current_dir) and '/' not in member.name[len(current_dir):]]
+        return result
 
-    def cd(self, directory):
-        if directory == "..":
-            if self.current_dir != "/":
-                self.current_dir = os.path.dirname(self.current_dir)
-            output = "Changed to parent directory"
+    def cd(self, path):
+        if path == '..':
+            if self.current_path:
+                self.current_path = '/'.join(self.current_path.strip('/').split('/')[:-1])
         else:
-            new_dir = os.path.join(self.current_dir, directory)
-            path = os.path.join("virtual_fs", new_dir.strip("/"))
-            if os.path.isdir(path):
-                self.current_dir = new_dir
-                output = f"Changed directory to {directory}"
+            new_path = os.path.join(self.current_path, path).strip('/')
+            new_path = new_path.replace('\\', '/')
+            if new_path.startswith('/'):
+                new_path = new_path[1:]
+            if any(member.name.startswith(new_path + '/') or member.name == new_path for member in self.tar.getmembers()):
+                self.current_path = new_path
             else:
-                output = "No such directory"
-        self.log_action(f"cd {directory}")
-        return output
+                return f'Path {path} not found'
+        return 'Changed directory to ' + self.current_path.split("/")[-1]
 
-    def tac(self, filename):
-        path = os.path.join("virtual_fs", self.current_dir.strip("/"), filename)
+    def tac(self, file_path):
         try:
-            with open(path, "r") as file:
-                lines = file.readlines()
-                output = "".join(lines)
-                output = output[::-1]
-        except FileNotFoundError:
-            output = "File not found"
-        self.log_action(f"tac {filename}")
-        return output
+            if (self.current_path == ""):
+                file_path = file_path
+            else:
+                file_path = "/" + file_path
+            file = self.tar.extractfile(self.current_path + file_path)
+            if file:
+                lines = file.read().decode().splitlines()
+                return lines[0][::-1]
+            else:
+                return f'File {file_path} not found'
+        except KeyError:
+            return f'File {file_path} not found'
 
-    def chown(self, filename, owner):
-        path = os.path.join("virtual_fs", self.current_dir.strip("/"), filename)
-        if os.path.exists(path):
-            self.file_owners[filename] = owner
-            output = f"Simulated owner of {filename} changed to {owner}"
-        else:
-            output = "File not found"
-        self.log_action(f"chown {filename} {owner}")
-        return output
+    def chown(self, file_path, owner):
+        try:
+            if (self.current_path == ""):
+                file_path = file_path
+            else:
+                file_path = "/" + file_path
+            member = self.tar.getmember(self.current_path + file_path)
+            member.uid = owner
+            self.log_action(f'chown {file_path} {owner}')
+            return f'Owner of {file_path} changed to {owner}'
+        except KeyError:
+            return f'File {file_path} not found'
 
     def exit(self):
-        output = "Exiting shell emulator."
-        self.log_action("exit")
-        return output
-
-
-class ShellGUI:
-    def __init__(self, emulator):
-        self.emulator = emulator
-        self.window = tk.Tk()
-        self.window.title("Shell Emulator")
-
-        self.output = tk.Text(self.window, width=60, height=20, wrap="word")
-        self.output.pack()
-
-        self.entry = tk.Entry(self.window, width=50)
-        self.entry.pack()
-        self.entry.bind("<Return>", self.execute_command)
-
-    def execute_command(self, event):
-        command = self.entry.get()
-        self.entry.delete(0, tk.END)
-        self.output.insert(tk.END, command + "\n")
-        output = ""
-
-        if command.startswith("ls"):
-            output = self.emulator.ls()
-        elif command.startswith("cd"):
-            _, dir_name = command.split(maxsplit=1)
-            output = self.emulator.cd(dir_name)
-        elif command.startswith("tac"):
-            _, filename = command.split(maxsplit=1)
-            output = self.emulator.tac(filename)
-        elif command.startswith("chown"):
-            _, filename, owner = command.split(maxsplit=2)
-            output = self.emulator.chown(filename, int(owner))
-        elif command == "exit":
-            output = self.emulator.exit()
-            self.window.quit()
-
-        self.output.insert(tk.END, output + "\n")  # Вывод результата в Text
-        self.output.see(tk.END)  # Прокрутка к последнему выводу
+        self.log_action('exit')
+        self.tar.close()
+        exit(0)
 
     def run(self):
-        self.window.mainloop()
+        root = tk.Tk()
+        root.title("Virtual Shell")
+        def on_command():
+            output_text.config(state=tk.NORMAL)
+            command = command_entry.get()
+            self.log_action(command)
+            output_text.insert(tk.END, "emulatedShell@emulatedUser:~/" + self.current_path.split("/")[-1] + "$ " + command + "\n")
+            if command.startswith('ls'):
+                result = self.ls()
+                output_text.insert(tk.END, '\n'.join(result) + '\n')
+            elif command.startswith('cd'):
+                _, path = command.split(maxsplit=1)
+                result = self.cd(path)
+                output_text.insert(tk.END, result + '\n')
+            elif command.startswith('tac'):
+                _, file_path = command.split(maxsplit=1)
+                result = self.tac(file_path)
+                output_text.insert(tk.END, result + '\n')
+            elif command.startswith('chown'):
+                _, file_path, owner = command.split(maxsplit=2)
+                result = self.chown(owner, file_path)
+                output_text.insert(tk.END, result + '\n')
+            elif command.startswith('exit'):
+                self.exit()
+            else:
+                output_text.insert(tk.END, 'Unknown command\n')
+            command_entry.delete(0, tk.END)
+            output_text.config(state=tk.DISABLED)
+        command_entry = tk.Entry(root, width=50)
+        command_entry.pack()
+        command_entry.bind('<Return>', lambda event: on_command())
 
+        output_text = tk.Text(root, height=20, width=50)
+        output_text.pack()
+        output_text.config(state=tk.DISABLED)
+        root.mainloop()
 
 if __name__ == "__main__":
-    import sys
+    import argparse
 
-    if len(sys.argv) != 3:
-        print("Usage: shell_emulator.py <path_to_vfs_tar> <path_to_log_file>")
-        sys.exit(1)
+    parser = argparse.ArgumentParser(description="Virtual Shell Emulator")
+    parser.add_argument("tar_path", help="Path to the TAR file")
+    parser.add_argument("log_path", help="Path to the log file")
+    args = parser.parse_args()
 
-    vfs_path = sys.argv[1]
-    log_path = sys.argv[2]
-
-    emulator = ShellEmulator(vfs_path, log_path)
-    gui = ShellGUI(emulator)
-    gui.run()
+    shell = VirtualShell(args.tar_path, args.log_path)
+    shell.run()
