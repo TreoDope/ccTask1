@@ -6,12 +6,11 @@ db_name = 'mydatabase'
 db_user = 'admin'
 db_password = 'secret'
 
-struct {
-    database {
-        name = ?(db_name),
-        user = ?(db_user),
-        password = ?(db_password),
-        max_connections = 50,
-        timeout = 10
-    }
+
+database {
+    name = ?(db_name),
+    user = ?(db_user),
+    password = ?(db_password),
+    max_connections = 50,
+    timeout = 10
 }
