@@ -12,9 +12,11 @@ class ConfigParser:
         i = 0
         while i < len(lines):
             line = lines[i].strip()
+            myValue = line.split("{")[0]
+            myValue = myValue.split(" ")[0]
             if line.startswith('{#'):
                 i = self.skip_multiline_comment(lines, i)
-            elif line.startswith('struct {'):
+            elif line.split("   ")[0].startswith(myValue + ' {'):
                 struct_name, struct_value = self.parse_struct(lines, i)
                 result[struct_name] = struct_value
                 i = self.find_end_of_struct(lines, i)
@@ -57,6 +59,7 @@ class ConfigParser:
                 name, value = line.split('=', 1)
                 name = name.strip()
                 value = value.strip().rstrip(',')
+                checkValue = value.split("{")
                 if value.startswith("'") and value.endswith("'"):
                     value = value.strip("'")
                 elif value.startswith('struct {'):
