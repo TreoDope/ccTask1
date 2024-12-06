@@ -82,7 +82,7 @@ db_name = 'mydatabase'
 db_user = 'admin'
 db_password = 'secret'
 
-struct {
+database {
     name = ?(db_name),
     user = ?(db_user),
     password = ?(db_password),
@@ -101,7 +101,7 @@ struct {
 port = 8080
 host = 'localhost'
 
-struct {
+network {
     port = ?(port),
     host = ?(host),
     max_connections = 100,
@@ -118,7 +118,7 @@ python parser.py < db.txt > output.yaml
 Получаем выходной файл:
 
 ```yaml
-struct:
+database:
   max_connections: 50
   name: mydatabase
   password: secret
@@ -136,7 +136,7 @@ python parser.py < network.txt > output.yaml
 Получаем выходной файл:
 
 ```yaml
-struct:
+network:
   host: localhost
   max_connections: 100
   port: 8080
