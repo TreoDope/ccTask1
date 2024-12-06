@@ -83,13 +83,11 @@ db_user = 'admin'
 db_password = 'secret'
 
 struct {
-    database {
-        name = ?(db_name),
-        user = ?(db_user),
-        password = ?(db_password),
-        max_connections = 50,
-        timeout = 10
-    }
+    name = ?(db_name),
+    user = ?(db_user),
+    password = ?(db_password),
+    max_connections = 50,
+    timeout = 10
 }
 ```
 
@@ -104,12 +102,10 @@ port = 8080
 host = 'localhost'
 
 struct {
-    server {
-        port = ?(port),
-        host = ?(host),
-        max_connections = 100,
-        timeout = 30
-    }
+    port = ?(port),
+    host = ?(host),
+    max_connections = 100,
+    timeout = 30
 }
 ```
 
